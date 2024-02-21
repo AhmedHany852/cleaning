@@ -14,60 +14,8 @@ use Illuminate\Support\Facades\Validator;
 class SubscriptionController extends Controller
 {
 
-    // public function createSubscriptions(Request $request)
-    // {
-    //     if (is_string($request->service_id)) {
-    //         $service_ids = explode(',', $request->service_id);
-    //     } else {
-    //         // Handle the case where service_id is not a string (e.g., it's already an array)
-    //         $service_ids = [];
-    //     }
 
-    //     //$service_ids = explode(',', $request->service_id);
-    //     // Validate the input data
-    //     $validatedData = $request->validate([
-    //         'description' => 'required',
-    //         'visits' => 'required|integer|min:0',
-    //         'price' => 'required|numeric|min:0',
-    //         'duration' => 'nullable|integer|min:0',
-    //         'status' => 'required|in:active,inactive',
-    //         'service_ids.*' => 'required|exists:services,id', // Ensure each service ID exists in the services table
-    //     ]);
-
-    //     // Start a database transaction
-    //     DB::beginTransaction();
-
-
-    //     // Create a new subscription
-    //     $subscription = Subscription::create([
-    //         'description' => $request->description,
-    //         'visits' => $request->visits,
-    //         'price' => $request->price,
-    //         'duration' => $request->duration,
-    //         'status' => $request->status,
-    //     ]);
-
-    //     // Attach services to the subscription
-    //     foreach ($service_ids as $serviceId) {
-    //         if (!empty($serviceId)) {
-    //             $subscription->services()->attach($serviceId, ['subscription_id' => $subscription->id]);
-    //         }
-
-
-    //         // $subscription->services()->attach($serviceId);
-    //     }
-
-    //     // Commit the transaction
-    //     DB::commit();
-
-    //     // Return success response
-    //     return response()->json([
-    //         'message' => 'Subscription created successfully with selected services.',
-    //         'subscription' => $subscription
-    //     ], 200);
-    // }
     public function createSubscriptions(Request $request)
-<<<<<<< HEAD
     {
         $service_ids = explode(',', $request->service_ids);
         // Validate the input data
@@ -108,56 +56,7 @@ class SubscriptionController extends Controller
             'message' => 'Subscription created successfully with selected services.',
             'subscription' => $subscription
         ], 200);
-=======
-{
-    if (is_string($request->service_id)) {
-        $service_ids = explode(',', $request->service_id);
-    } else {
-        // Handle the case where service_id is not a string (e.g., it's already an array)
-        $service_ids = [];
->>>>>>> 6adc51aca8fa41895aef44413b9ccd7a74a1ec1d
     }
-
-    // Validate the input data
-    $validatedData = $request->validate([
-        'description' => 'required',
-        'visits' => 'required|integer|min:0',
-        'price' => 'required|numeric|min:0',
-        'duration' => 'nullable|integer|min:0',
-        'status' => 'required|in:active,inactive',
-        'service_ids.*' => 'required|exists:services,id', // Ensure each service ID exists in the services table
-    ]);
-
-    // Start a database transaction
-    DB::beginTransaction();
-
-    // Create a new subscription
-    $subscription = Subscription::create([
-        'description' => $request->description,
-        'visits' => $request->visits,
-        'price' => $request->price,
-        'duration' => $request->duration,
-        'status' => $request->status,
-    ]);
-
-    // Attach services to the subscription
-    foreach ($service_ids as $serviceId) {
-        if (!empty($serviceId)) {
-            $subscription->services()->attach($serviceId, ['subscription_id' => $subscription->id]);
-        }
-    }
-
-    // Commit the transaction
-    DB::commit();
-
-    // Return success response
-    return response()->json([
-        'message' => 'Subscription created successfully with selected services.',
-        'subscription' => $subscription
-    ], 200);
-}
-
-
 
     public function checkExpiration(Request $request)
     {
