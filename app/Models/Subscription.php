@@ -10,7 +10,7 @@ use Carbon\Carbon;
 class Subscription extends Model
 {
     protected $table = 'subscriptions';
-    protected $fillable = [ 'service_id', 'description', 'visits', 'price', 'duration', 'status'];
+    protected $fillable = [ 'description', 'visits', 'price', 'duration', 'status'];
 
 
     public function isExpired()
@@ -24,6 +24,6 @@ class Subscription extends Model
     }
     public function services()
     {
-        return $this->belongsToMany(Service::class)->withPivot('description', 'visits', 'price', 'duration', 'status');
+        return $this->belongsToMany(Service::class,'service_subscription');
     }
 }

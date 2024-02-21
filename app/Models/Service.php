@@ -13,7 +13,7 @@ class Service extends Model
 
     public function subscriptions()
     {
-        return $this->belongsToMany(Subscription::class)->withPivot('description', 'visits', 'price', 'duration', 'status');
+        return $this->belongsToMany(Subscription::class,'service_subscription');
     }
 }
 
