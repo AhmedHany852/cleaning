@@ -13,13 +13,33 @@ use Illuminate\Support\Facades\Validator;
 
 class SubscriptionController extends Controller
 {
+    public function index()
+    {
+        // Retrieve all subscriptions
+        $subscriptions = Subscription::with('services')->get();
+
+        // Return response with subscriptions
+        return response()->json([
+            'subscriptions' => $subscriptions
+        ], 200);
+    }
+    public function show($Id)
+    {
+        // Retrieve the subscription by its ID
+        $subscription = Subscription::with('services')->findOrFail($Id);
+
+        // Return response with the subscription
+        return response()->json([
+            'subscription' => $subscription
+        ], 200);
+    }
 
 
     public function createSubscriptions(Request $request)
     {
         $service_ids = explode(',', $request->service_ids);
         // Validate the input data
-        $validatedData = $request->validate([
+        $validator = Validator::make($request->all(), [
             'description' => 'required',
             'visits' => 'required|integer|min:0',
             'price' => 'required|numeric|min:0',
@@ -60,37 +80,64 @@ class SubscriptionController extends Controller
         ], 200);
     }
 
-    public function checkExpiration(Request $request)
+
+    public function updateSubscriptionStatus(Request $request, $id)
     {
-        // Validate the incoming request data
-        $validatedData = $request->validate([
-            'subscription_id' => 'required|exists:subscriptions,id',
+        // Validate the incoming request
+        $validator = Validator::make($request->all(), [
+            'status' => 'required|in:active,inactive', // Validate the new status value
         ]);
 
-        // Retrieve the subscription
-        $subscription = Subscription::findOrFail($validatedData['subscription_id']);
+        // Retrieve the subscription by its ID
+        $subscription = Subscription::findOrFail($id);
 
-        // Check if the subscription is expired
-        $isExpired = $subscription->isExpired();
+        // Eager load the associated services
+        $subscription->load('services');
+        // Update the status
+        $subscription->status = $request->status;
+        $subscription->save();
 
-        // Return the expiration status as JSON response
-        return response()->json(['expired' => $isExpired]);
+        // Return success response
+        return response()->json([
+            'message' => 'Subscription status updated successfully.',
+            'subscription' => $subscription
+        ], 200);
     }
-
-    public function checkVisits(Request $request)
+    public function updateSubscription(Request $request, $Id)
     {
-        // Validate the incoming request data
-        $validatedData = $request->validate([
-            'subscription_id' => 'required|exists:subscriptions,id',
+        // Validate the incoming request
+        $validator = Validator::make($request->all(), [
+            'description' => 'required',
+            'visits' => 'required|integer|min:0',
+            'price' => 'required|numeric|min:0',
+            'duration' => 'nullable|integer|min:0',
+            'status' => 'required|in:active,inactive',
+            'service_ids.*' => 'required|exists:services,id', // Ensure each service ID exists in the services table
         ]);
 
-        // Retrieve the subscription
-        $subscription = Subscription::findOrFail($validatedData['subscription_id']);
+        // Retrieve the subscription by its ID
+        $subscription = Subscription::findOrFail($Id);
 
-        // Check if the visit limit is reached
-        $isVisitLimitReached = $subscription->isVisitLimitReached();
+        // Update the subscription data
+        $subscription->update([
+            'description' => $request->description,
+            'visits' => $request->visits,
+            'price' => $request->price,
+            'duration' => $request->duration,
+            'status' => $request->status,
+        ]);
 
-        // Return the visit limit status as JSON response
-        return response()->json(['visit_limit_reached' => $isVisitLimitReached]);
+        // Sync the attached services
+        $service_ids = explode(',', $request->service_ids);
+        $subscription->services()->sync($service_ids);
+
+        // Eager load the associated services
+        $subscription->load('services');
+
+        // Return success response
+        return response()->json([
+            'message' => 'Subscription updated successfully.',
+            'subscription' => $subscription
+        ], 200);
     }
 }

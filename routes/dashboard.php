@@ -64,6 +64,10 @@ Route::post('/bookings/{id}/status', [BookingController::class, 'changeBookingSt
 Route::get('/bookings/{id}', [BookingController::class, 'show']);
 // subscriptionb
 Route::post('/suscriptions', [SubscriptionController::class, 'createSubscriptions']);
+Route::post('/subscriptions/{id}/status', [SubscriptionController::class,'updateSubscriptionStatus']);
+Route::post('/subscriptions/{id}/update', [SubscriptionController::class,'updateSubscription']);
+Route::get('/suscriptions/{id}', [SubscriptionController::class,'show']);
+Route::get('/suscriptions', [SubscriptionController::class,'index']);
 });
 
 

@@ -5,6 +5,7 @@ use App\Http\Controllers\AppUser\appAuthController;
 use App\Http\Controllers\AppUser\AppUsersController;
 use App\Http\Controllers\AppUser\BookingController;
 use App\Http\Controllers\AppUser\GeneralController;
+use App\Http\Controllers\AppUser\SubscriptionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -38,6 +39,9 @@ Route::group([
     Route::get('/contact-us', [GeneralController::class, 'getContactUs']);
     Route::get('/about-us', [GeneralController::class, 'getAboutUs']);
     Route::get('/question', [GeneralController::class, 'getQuestion']);
+    //suscriptions
+    Route::get('/suscriptions/{id}', [SubscriptionController::class,'show']);
+    Route::get('/suscriptions', [SubscriptionController::class,'index']);
    
 
   

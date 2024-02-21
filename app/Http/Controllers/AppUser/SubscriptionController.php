@@ -3,11 +3,34 @@
 namespace App\Http\Controllers\AppUser;
 
 use App\Http\Controllers\Controller;
+use App\Models\AppUsers;
 use App\Models\Subscription;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SubscriptionController extends Controller
 {
+    public function index()
+    {
+        // Retrieve all subscriptions
+        $subscriptions = Subscription::with('services')->get();
+
+        // Return response with subscriptions
+        return response()->json([
+            'subscriptions' => $subscriptions
+        ], 200);
+    }
+    public function show($Id)
+    {
+        // Retrieve the subscription by its ID
+        $subscription = Subscription::with('services')->findOrFail($Id);
+
+        // Return response with the subscription
+        return response()->json([
+            'subscription' => $subscription
+        ], 200);
+    }
+
     public function requestVisit(Request $request)
     {
         // Validate the incoming request data
@@ -35,4 +58,5 @@ class SubscriptionController extends Controller
         // Return a success message
         return response()->json(['message' => 'Visit requested successfully.'], 200);
     }
+   
 }
