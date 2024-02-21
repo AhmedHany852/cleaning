@@ -16,7 +16,7 @@ class SubscriptionController extends Controller
 
     public function createSubscriptions(Request $request)
     {
-        $service_ids = explode(',', $request->service_id);
+        $service_ids = explode(',', $request->service_ids);
         // Validate the input data
         $validatedData = $request->validate([
             'description' => 'required',
