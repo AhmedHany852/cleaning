@@ -47,6 +47,8 @@ class SubscriptionController extends Controller
 
             $subscription->services()->attach($serviceId);
         }
+        // Eager load the associated services
+        $subscription->load('services');
 
         // Commit the transaction
         DB::commit();
