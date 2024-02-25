@@ -3,12 +3,14 @@
 use App\Http\Controllers\Admin\AboutUsController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AuthController;
-use App\Http\Controllers\admin\BookingController;
+use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\ContactController;
+use App\Http\Controllers\Admin\PrivacyController;
 use App\Http\Controllers\Admin\QuestionController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SubscriptionController;
+use App\Http\Controllers\Admin\TermsController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -49,6 +51,12 @@ Route::get('getServicesCount', [ServiceController::class, 'getServicesCount']);
 //about_us
 Route::get('about-us', [AboutUsController::class, 'index']);
 Route::post('about-us', [AboutUsController::class, 'update']);
+//terms
+Route::get('terms', [TermsController::class, 'index']);
+Route::post('terms', [TermsController::class, 'update']);
+//privacy
+Route::get('privacies', [PrivacyController::class, 'index']);
+Route::post('privacies', [PrivacyController::class, 'update']);
 //questions
 Route::get('questions', [QuestionController::class, 'index']);
 Route::post('questions', [QuestionController::class, 'store']);

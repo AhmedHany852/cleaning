@@ -14,11 +14,44 @@ class PermissionTableSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
-            "user",
+            // "user",
             "users-list",
             "update-user",
             "delete-user",
             "add-user",
+            "about",
+            "update-or-create-about",
+            "booking-list",
+            "booking",
+            "change-booking-status",
+            "contact",
+            "update-or-create-contact",
+            "questions",
+            "questions-list",
+            "update-question",
+            "delete-question",
+            "add-question",
+            "role",
+            "roles-list",
+            "update-role",
+            "delete-role",
+            "add-role",
+            "service",
+            "service-list",
+            "update-service",
+            "delete-service",
+            "add-service",
+            "subscription",
+            "update-subscription-status",
+            "subscription-list",
+            "update-subscription",
+            "delete-subscription",
+            "add-subscription",
+
+
+
+
+
         ];
         foreach ($permissions as $permission) {
             Permission::create(['name' => $permission]);

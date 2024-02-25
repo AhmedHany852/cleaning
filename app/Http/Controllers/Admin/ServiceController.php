@@ -144,14 +144,5 @@ class ServiceController extends Controller
             'data' => $count
         ]);
     }
-    public function getServicesCount()
-    {
-        $count = Service::count();
-
-        return response()->json([
-            "successful" => true,
-            "message" => "عملية العرض تمت بنجاح",
-            'data' => $count
-        ]);
-    }
+  
 }
