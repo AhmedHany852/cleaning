@@ -11,7 +11,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 class AppUsers extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
-    
+
     protected $fillable = [
         'id',
         'name',
@@ -19,14 +19,14 @@ class AppUsers extends Authenticatable implements JWTSubject
         'image',
         'email',
         'phone',
-      
-      
+
+
     ];
 
     protected $hidden = [
         'password',
     ];
-    
+
     public function getJWTIdentifier()
     {
         return $this->getKey();
@@ -40,5 +40,9 @@ class AppUsers extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+    public function subscription()
+    {
+        return $this->belongsToMany(Subscription::class,'memberships');
     }
 }
