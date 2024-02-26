@@ -24,7 +24,9 @@ function isServiceInUserSubscription( $serviceId)
     if (!$subscription || $subscription->expire_date < now()) {
         return false;
     }
-
+    if ($subscription->visit_count >= $subscription->visit_limit) {
+        return response()->json(['error' => 'Visit count limit exceeded'], 422);
+    }
     $subscriptionServices = $subscription->services;
 
     foreach ($subscriptionServices as $service) {
