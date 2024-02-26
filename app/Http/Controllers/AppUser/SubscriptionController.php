@@ -45,6 +45,7 @@ class SubscriptionController extends Controller
         $membership->subscription_id = $request->subscription_id;
         $membership->expire_date = Carbon::now()->addDays($duration);
         $membership->save();
+        ////////payment
         return response()->json(['message' => 'you subscripe successfully.'], 200);
    }
     public function requestVisit(Request $request)
