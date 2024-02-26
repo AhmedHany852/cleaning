@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\PrivacyController;
 use App\Http\Controllers\Admin\QuestionController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SubscriptionController;
 use App\Http\Controllers\Admin\TermsController;
 use Illuminate\Support\Facades\Route;
@@ -66,6 +67,9 @@ Route::delete('questions/{question}', [QuestionController::class, 'destroy']);
 //Contact
 Route::get('contact', [ContactController::class, 'index']);
 Route::post('contact', [ContactController::class, 'update']);
+//setting
+Route::get('/setting', [SettingController::class, 'index']);
+Route::post('/setting', [SettingController::class, 'store']);
 //booking 
 Route::get('/bookings', [BookingController::class, 'index']);
 Route::post('/bookings/{id}/status', [BookingController::class, 'changeBookingStatus']);

@@ -11,11 +11,29 @@ class RoleController extends Controller
 {
     public function index(Request $request)
     {
+        // Retrieve roles with permissions and paginate the results
         $roles = Role::with('permissions')->paginate($request->get('per_page', 10));
-        
-        return response()->json($roles);
-       
+    
+        // Modify the structure of the data
+        $data = $roles->map(function ($role) {
+            // Extract permissions from the role
+            $permissions = $role->permissions->pluck('name');
+    
+            // Return role data with permissions
+            return [
+                'role' => [
+                    'id' => $role->id,
+                    'name' => $role->name,
+                    
+                ],
+                'permissions' => $permissions->toArray(),
+            ];
+        });
+    
+        // Return the modified data as JSON
+        return response()->json($data);
     }
+    
     
 
     
@@ -40,14 +58,33 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Role $role)
-    {
-        $role =  Role::with('permissions')->where('id', $role->id)->first();
+    // public function show(Role $role)
+    // {
+    //     $role =  Role::with('permissions')->where('id', $role->id)->first();
 
-        return response()->json($role);
+    //     return response()->json($role);
         
        
-    }
+    // }
+    public function show(Role $role)
+{
+    $role = Role::with('permissions')->where('id', $role->id)->first();
+
+    // Extract permissions from the role
+    $permissions = $role->permissions->pluck('name');
+
+    // Create a new array with custom structure
+    $data = [
+        'role' => [
+            
+            'name' => $role->name,
+        ],
+        'permissions' => $permissions->toArray(),
+    ];
+
+    return response()->json($data);
+}
+
 
     /**
      * Update the specified resource in storage.

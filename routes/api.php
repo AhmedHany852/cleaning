@@ -39,6 +39,9 @@ Route::group([
     Route::get('/contact-us', [GeneralController::class, 'getContactUs']);
     Route::get('/about-us', [GeneralController::class, 'getAboutUs']);
     Route::get('/question', [GeneralController::class, 'getQuestion']);
+    Route::get('/privacy', [GeneralController::class, 'getAllprivacy']);
+    Route::get('/term', [GeneralController::class, 'getAllTerm']);
+    Route::get('/setting', [GeneralController::class, 'getAllsetting']);
     //suscriptions
     Route::get('/suscriptions/{id}', [SubscriptionController::class,'show']);
     Route::get('/suscriptions', [SubscriptionController::class,'index']);
