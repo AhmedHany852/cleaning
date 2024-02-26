@@ -36,7 +36,7 @@ class BookingController extends Controller
 
     public function bookService(Request $request)
     {
-        // Validate the incoming request data 
+        // Validate the incoming request data
         $validator = Validator::make($request->all(), [
             'service_id' => 'required|exists:services,id',
             'name' => 'required|string',
@@ -88,6 +88,12 @@ class BookingController extends Controller
             'total_price' => $total_price,
             'status' => $request->has('status') ? $request->status : false,
         ]);
+            // Check if the service exists in the user's subscription
+            if (!isServiceInUserSubscription($request->service_id)) {
+                    ///payment
+            }else{
+
+            }
 
         // Return success response with the created booking
         return response()->json(['message' => 'Booking created successfully', 'booking' => $booking], 201);

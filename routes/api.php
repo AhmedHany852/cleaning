@@ -45,9 +45,9 @@ Route::group([
     //suscriptions
     Route::get('/suscriptions/{id}', [SubscriptionController::class,'show']);
     Route::get('/suscriptions', [SubscriptionController::class,'index']);
-   
+    Route::post('/booking-suscriptions', [SubscriptionController::class,'booking']);
 
-  
+
 });
 
 

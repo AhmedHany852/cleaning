@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\AppUser;
 
-use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use App\Models\AppUsers;
+use App\Models\Membership;
 use App\Models\Subscription;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class SubscriptionController extends Controller
@@ -30,7 +32,21 @@ class SubscriptionController extends Controller
             'subscription' => $subscription
         ], 200);
     }
+   public function booking(Request $request){
+    $validatedData = $request->validate([
+        'subscription_id' => 'required|exists:subscriptions,id',
+    ]);
+    $user = Auth::guard('app_users')->user();
+         $subscription = Subscription::find($request->subscription_id);
+        $duration = $subscription->duration;
 
+        $membership = new Membership();
+        $membership->user_id = $user->id;
+        $membership->subscription_id = $request->subscription_id;
+        $membership->expire_date = Carbon::now()->addDays($duration);
+        $membership->save();
+        return response()->json(['message' => 'you subscripe successfully.'], 200);
+   }
     public function requestVisit(Request $request)
     {
         // Validate the incoming request data
@@ -58,5 +74,5 @@ class SubscriptionController extends Controller
         // Return a success message
         return response()->json(['message' => 'Visit requested successfully.'], 200);
     }
-   
+
 }
