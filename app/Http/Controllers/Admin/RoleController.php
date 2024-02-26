@@ -11,27 +11,9 @@ class RoleController extends Controller
 {
     public function index(Request $request)
     {
-        // Retrieve roles with permissions and paginate the results
-        $roles = Role::with('permissions')->paginate($request->get('per_page', 10));
-    
-        // Modify the structure of the data
-        $data = $roles->map(function ($role) {
-            // Extract permissions from the role
-            $permissions = $role->permissions->pluck('name');
-    
-            // Return role data with permissions
-            return [
-                'role' => [
-                    'id' => $role->id,
-                    'name' => $role->name,
-                    
-                ],
-                'permissions' => $permissions->toArray(),
-            ];
-        });
-    
-        // Return the modified data as JSON
-        return response()->json($data);
+        $roles = Role::with('permissions')->paginate($request->get('per_page', 50));
+        return response()->json($roles);
+
     }
     
     
