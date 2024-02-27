@@ -51,14 +51,16 @@ function isServiceInUserSubscription($serviceId)
         return false;
     }
 
-    $subscriptions = $user->subscriptions()->where('expire_date', '>', now())->get();
+    $subscriptions = $user->subscription()->where('expire_date', '>', now())->get();
 
     if ($subscriptions->isEmpty()) {
         return false;
     }
 
     foreach ($subscriptions as $subscription) {
-        if ($subscription->visit_count >= $subscription->visits) {
+        $subscriptionData = $user->subscription()->first(['expire_date', 'visit_count']);
+
+        if ( $subscriptionData->visit_count >= $subscription->visits) {
             return response()->json(['error' => 'Visit count limit exceeded'], 422);
         }
 
