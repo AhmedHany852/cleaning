@@ -11,36 +11,67 @@ function upload($avatar, $directory)
 
 }
 
-function isServiceInUserSubscription( $serviceId)
+// function isServiceInUserSubscription( $serviceId)
+// {
+//     $user = Auth::guard('app_users')->user();
+
+//     if (!$user) {
+//         return false;
+//     }
+//     $subscriptions = $user->subscription;
+//     $subscriptionData = $user->subscription()->first(['expire_date', 'visit_count']);
+
+//     if (!$subscriptions) {
+//         return false;
+//     }
+
+//     if (!$subscriptions ||  $subscriptionData->expire_date < now()) {
+//         return false;
+//     }
+//     foreach($subscriptions as $subscription){
+//         if ( $subscriptionData->visit_count >= $subscription->visits) {
+//             return response()->json(['error' => 'Visit count limit exceeded'], 422);
+//         }
+//         $subscriptionServices = $subscription->services;
+
+//         foreach ($subscriptionServices as $service) {
+//             // dd($serviceId);
+//             if ($service->id == $serviceId) {
+//                 return true;
+//             }
+//         }
+//     }
+//     return false;
+// }
+function isServiceInUserSubscription($serviceId)
 {
     $user = Auth::guard('app_users')->user();
 
     if (!$user) {
         return false;
     }
-    $subscriptions = $user->subscription;
-    $subscriptionData = $user->subscription()->first(['expire_date', 'visit_count']);
 
-    if (!$subscriptions) {
+    $subscriptions = $user->subscriptions()->where('expire_date', '>', now())->get();
+
+    if ($subscriptions->isEmpty()) {
         return false;
     }
 
-    if (!$subscriptions ||  $subscriptionData->expire_date < now()) {
-        return false;
-    }
-    foreach($subscriptions as $subscription){
-        if ( $subscriptionData->visit_count >= $subscription->visits) {
+    foreach ($subscriptions as $subscription) {
+        if ($subscription->visit_count >= $subscription->visits) {
             return response()->json(['error' => 'Visit count limit exceeded'], 422);
         }
+
         $subscriptionServices = $subscription->services;
 
         foreach ($subscriptionServices as $service) {
-            // dd($serviceId);
             if ($service->id == $serviceId) {
                 return true;
             }
         }
     }
+
     return false;
 }
+
 }
