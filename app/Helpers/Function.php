@@ -18,23 +18,29 @@ function isServiceInUserSubscription( $serviceId)
     if (!$user) {
         return false;
     }
+    $subscriptions = $user->subscription;
+    $subscriptionData = $user->subscription()->first(['expire_date', 'visit_count']);
 
-    $subscription = $user->subscription;
-
-    if (!$subscription || $subscription->expire_date < now()) {
+    if (!$subscriptions) {
         return false;
     }
-    if ($subscription->visit_count >= $subscription->visit_limit) {
-        return response()->json(['error' => 'Visit count limit exceeded'], 422);
-    }
-    $subscriptionServices = $subscription->services;
 
-    foreach ($subscriptionServices as $service) {
-        if ($service->id === $serviceId) {
-            return true;
+    if (!$subscriptions ||  $subscriptionData->expire_date < now()) {
+        return false;
+    }
+    foreach($subscriptions as $subscription){
+        if ( $subscriptionData->visit_count >= $subscription->visits) {
+            return response()->json(['error' => 'Visit count limit exceeded'], 422);
+        }
+        $subscriptionServices = $subscription->services;
+
+        foreach ($subscriptionServices as $service) {
+            // dd($serviceId);
+            if ($service->id == $serviceId) {
+                return true;
+            }
         }
     }
-
     return false;
 }
 }

@@ -51,7 +51,13 @@ class BookingController extends Controller
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 422);
         }
-
+        if (!isServiceInUserSubscription($request->service_id)) {
+            ///payment
+        dd( isServiceInUserSubscription($request->service_id));
+    }else{
+        dd(99);
+          //update limit
+    }
         // Fetch the service based on the provided service_id
         $service = Service::findOrFail($request->service_id);
 
@@ -89,11 +95,7 @@ class BookingController extends Controller
             'status' => $request->has('status') ? $request->status : false,
         ]);
             // Check if the service exists in the user's subscription
-            if (!isServiceInUserSubscription($request->service_id)) {
-                    ///payment
-            }else{
 
-            }
 
         // Return success response with the created booking
         return response()->json(['message' => 'Booking created successfully', 'booking' => $booking], 201);
