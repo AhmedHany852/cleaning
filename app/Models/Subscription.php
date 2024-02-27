@@ -15,7 +15,7 @@ class Subscription extends Model
 
     public function isExpired()
     {
-        
+
         return Carbon::now()->greaterThan($this->expires_at);
     }
 

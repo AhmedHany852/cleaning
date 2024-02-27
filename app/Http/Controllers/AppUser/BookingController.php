@@ -36,39 +36,28 @@ class BookingController extends Controller
 
     public function bookService(Request $request)
     {
-        // Validate the incoming request data 
+        // Validate the incoming request data
         $validator = Validator::make($request->all(), [
             'service_id' => 'required|exists:services,id',
             'name' => 'required|string',
             'address' => 'required|string',
             'phone' => 'required|string',
-            'date' => 'required|date_format:m/d/Y H:i', // Add validation for the time format
+            'date' => 'required|date_format:m/d/Y H:i',
             'meter' => 'required|numeric',
             'status' => 'boolean',
         ]);
-
-        // If validation fails, return error response
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 422);
         }
-
-        // Fetch the service based on the provided service_id
         $service = Service::findOrFail($request->service_id);
-
         // Calculate the total price: meter * service price
         $total_price = $request->meter * $service->price;
-
-        // Convert the selected date and time to Carbon instance
         $selectedDateTime = Carbon::createFromFormat('m/d/Y H:i', $request->date);
-
-        // Get the authenticated user using the app_users guard
         $user = Auth::guard('app_users')->user();
-
-        // Check if a user is authenticated
         if (!$user) {
             return response()->json(['error' => 'User not authenticated'], 401);
         }
-        // Check if the date and time slot are already booked
+
         $existingBooking = Booking::where('service_id', $request->service_id)
             ->where('date', $selectedDateTime->format('Y-m-d H:i:s'))
             ->first();
@@ -76,10 +65,9 @@ class BookingController extends Controller
         if ($existingBooking) {
             return response()->json(['error' => 'This date and time slot are already booked. Please choose another.'], 422);
         }
-
         // Create the booking
         $booking = Booking::create([
-            'user_id' => $user->id, // Use the authenticated user's ID
+            'user_id' => $user->id,
             'service_id' => $request->service_id,
             'name' => $request->name,
             'address' => $request->address,
@@ -88,8 +76,26 @@ class BookingController extends Controller
             'total_price' => $total_price,
             'status' => $request->has('status') ? $request->status : false,
         ]);
+        // Check if the service exists in the user's subscription
+        if (!isServiceInUserSubscription($request->service_id)) {
+            ///payment
+            dd(88);
+        } else {
+            //   dd(99);
+            $user = Auth::guard('app_users')->user();
+            $subscriptions = $user->subscription()->where('expire_date', '>', now())->get();
 
-        // Return success response with the created booking
+            foreach ($subscriptions as $subscription) {
+                //update limit
+                $pivotData = $subscription->pivot;
+                if ($pivotData->visit_count < $subscription->visits) {
+                    $pivotData->visit_count++;
+                    $pivotData->save();
+                    break;
+                }
+            }
+        }
+
         return response()->json(['message' => 'Booking created successfully', 'booking' => $booking], 201);
     }
 

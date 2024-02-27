@@ -45,27 +45,29 @@ class SettingController extends Controller
             'cr' => '',
             'vat' => '',
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json([
                 'status' => false,
                 'message' => $validator->errors(),
             ], 422);
         }
-    
+
         $settings = [];
-    
+
         foreach ($validator->validated() as $key => $input) {
-            if ($key === 'site_logo' && $request->hasFile('site_logo') && $request->file('site_logo')->isValid()) {
-                $file = $request->file('site_logo');
-                $fileName = $file->getClientOriginalName(); // You can customize the file name as per your requirement
-                $filePath = $file->storeAs('uploads/settings', $fileName, 'public');
-    
-                $input = $filePath; // Store the file path in input
+            if (request()->hasFile('site_logo') && $request->file('site_logo')->isValid()) {
+
+                $avatar = $request->file('site_logo');
+                $avatarName = time() . '.' . $avatar->getClientOriginalExtension();
+                $avatar->move(public_path('uploads/settings'), $avatarName);
+                $input =  $avatarName;
             }
-    
+
+
             Setting::updateOrCreate(['key' => $key], ['value' => $input]);
         }
+<<<<<<< HEAD
     
         // Fetch the stored settings after the update
         $storedSettings = Setting::pluck('value', 'key')->toArray();
@@ -77,7 +79,20 @@ class SettingController extends Controller
         }
     
         return response()->json(['isSuccess' => true, 'data' => $storedSettings], 200);
+=======
+
+
+
+        $settings = Setting::pluck('value', 'key')
+            ->toArray();
+        $image = asset('uploads/settings/' .  $settings['site_logo']);
+        $settings['site_logo'] =    $image;
+        return response()->json(['isSuccess' => true, 'data' =>    $settings], 200);
+
+
+
+>>>>>>> 184a396d3eaa4d41e2513e7eae1e2fd666c28b2a
     }
-    
-    
+
+
 }
