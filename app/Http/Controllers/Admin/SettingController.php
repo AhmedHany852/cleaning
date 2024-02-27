@@ -72,7 +72,8 @@ class SettingController extends Controller
     
         // Update the site_logo URL in the settings array if it exists
         if (isset($storedSettings['site_logo'])) {
-            $storedSettings['site_logo'] = asset('storage/' . $storedSettings['site_logo']);
+            $image = asset('uploads/settings/' .  $settings['site_logo']);
+            $settings['site_logo'] =    $image;
         }
     
         return response()->json(['isSuccess' => true, 'data' => $storedSettings], 200);

@@ -48,7 +48,7 @@ Route::get('/services/{service}', [ServiceController::class, 'show']);
 Route::post('/services', [ServiceController::class, 'store']);
 Route::post('/services/{service}', [ServiceController::class, 'update']);
 Route::delete('/services/{service}', [ServiceController::class, 'destroy']);
-Route::get('getServicesCount', [ServiceController::class, 'getServicesCount']); 
+Route::get('getServicesCount', [ServiceController::class, 'getServiceCount']); 
 //about_us
 Route::get('about-us', [AboutUsController::class, 'index']);
 Route::post('about-us', [AboutUsController::class, 'update']);

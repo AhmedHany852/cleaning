@@ -122,7 +122,7 @@ class ServiceController extends Controller
         }
         if ($service->photo) {
             // Assuming 'personal_photo' is the attribute storing the file name
-            $photoPath = 'uploads/personal_photo/' . $service->photo;
+            $photoPath = 'uploads/service_photo/' . $service->photo;
 
             // Delete photo from storage
             Storage::delete($photoPath);
