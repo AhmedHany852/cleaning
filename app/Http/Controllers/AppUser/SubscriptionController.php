@@ -8,6 +8,8 @@ use App\Models\Membership;
 use App\Models\Subscription;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Notifications\MembershipNotification;
 use Illuminate\Support\Facades\Auth;
 
 class SubscriptionController extends Controller
@@ -45,6 +47,13 @@ class SubscriptionController extends Controller
         $membership->subscription_id = $request->subscription_id;
         $membership->expire_date = Carbon::now()->addDays($duration);
         $membership->save();
+        $adminUsers = User::where('role', 'admin')->get();
+
+    // Dispatch the notification to admin users
+    foreach ($adminUsers as $adminUser) {
+        $adminUser->notify(new MembershipNotification($membership));
+    }
+
         ////////payment
         return response()->json(['message' => 'you subscripe successfully.'], 200);
    }

@@ -99,8 +99,10 @@ class BookingController extends Controller
             }
         }
         // Send notification when booking is created
-        $adminUsers = User::where('role', 'admin')->get();
-        Notification::send($adminUsers, new BookingNotification($booking));
+        $adminUsers = User::where('role', 'Admin')->get();
+        foreach ($adminUsers as $adminUser) {
+        Notification::send($adminUser, new BookingNotification($booking));
+        }
 
         return response()->json(['message' => 'Booking created successfully', 'booking' => $booking], 201);
     }
