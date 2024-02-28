@@ -5,10 +5,13 @@ namespace App\Http\Controllers\AppUser;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Service;
+use App\Models\User;
+use App\Notifications\BookingNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Notification;
 
 class BookingController extends Controller
 {
@@ -95,6 +98,9 @@ class BookingController extends Controller
                 }
             }
         }
+        // Send notification when booking is created
+        $adminUsers = User::where('role', 'admin')->get();
+        Notification::send($adminUsers, new BookingNotification($booking));
 
         return response()->json(['message' => 'Booking created successfully', 'booking' => $booking], 201);
     }
