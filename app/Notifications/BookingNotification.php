@@ -29,7 +29,7 @@ class BookingNotification extends Notification
     }
 
    
-    public function toArray($notifiable)
+    public function toArray($notifiable): array
     {
         return [
             'subject' => 'A new booking has been made',

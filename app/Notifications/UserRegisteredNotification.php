@@ -24,14 +24,12 @@ class UserRegisteredNotification extends Notification
     }
 
    
-    public function toArray(object $notifiable): array
-    {
-        return [
-            
-                'name' => $this->user->name,
-                'email' => $this->user->email,
-                'message' => 'لديك مستخدم جديد',
-            
-        ];
-    }
+   public function toArray($notifiable): array
+{
+    return [
+        'name' => $this->user->name,
+        'email' => $this->user->email,
+        'message' => 'لديك مستخدم جديد',
+    ];
+}
 }
