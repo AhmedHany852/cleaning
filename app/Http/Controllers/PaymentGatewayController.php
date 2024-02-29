@@ -48,7 +48,7 @@ class PaymentGatewayController extends Controller
             $avatar = request()->file('image');
             if ($avatar->isValid()) {
                 $avatarName = time() . '.' . $avatar->getClientOriginalExtension();
-                $avatarPath = public_path('/uploads/myfatoorah');
+                $avatarPath = public_path('/uploads/tammara');
                 $avatar->move($avatarPath, $avatarName);
                 $image  = $avatarName;
             }
@@ -78,7 +78,7 @@ class PaymentGatewayController extends Controller
             $avatar = request()->file('image');
             if ($avatar->isValid()) {
                 $avatarName = time() . '.' . $avatar->getClientOriginalExtension();
-                $avatarPath = public_path('/uploads/myfatoorah');
+                $avatarPath = public_path('/uploads/tabby');
                 $avatar->move($avatarPath, $avatarName);
                 $image  = $avatarName;
             }
