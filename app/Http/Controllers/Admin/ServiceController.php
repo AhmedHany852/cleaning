@@ -18,7 +18,7 @@ class ServiceController extends Controller
     {
         $service=Service::paginate($request->get('per_page', 50));
         return ServiceResource::collection($service);
-        
+
 
     }
 
@@ -52,6 +52,7 @@ class ServiceController extends Controller
             'price' => $request->price,
             'photo' => $photo,
             'status' => $request->has('status') ? $request->status : 1,
+            'duration' => $request->duration,
         ]);
         // return response()->json(['message' => 'service created successfully', 'data' => $service], 200);
         return (new ServiceResource($service ))
@@ -78,13 +79,13 @@ class ServiceController extends Controller
             'price' => 'required|numeric|min:0',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,pdf|max:2048',
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json([
                 'message' => $validator->errors(),
             ], 400);
         }
-    
+
         // Check if a new photo is provided
         if ($request->hasFile('photo')) {
             // Delete the existing photo if it exists
@@ -98,18 +99,19 @@ class ServiceController extends Controller
         } else {
             $photo = $service->photo; // Retain the existing photo
         }
-    
+
         $service->update([
             'name' => $request->name,
             'description' => $request->description,
             'price' => $request->price,
             'photo' => $photo,
             'status' => $request->has('status') ? $request->status : 1,
+            'duration' => $request->duration,
         ]);
-    
+
         return (new ServiceResource($service))->response()->setStatusCode(200);
     }
-    
+
 
     /**
      * Remove the specified resource from storage.
@@ -144,5 +146,5 @@ class ServiceController extends Controller
             'data' => $count
         ]);
     }
-  
+
 }

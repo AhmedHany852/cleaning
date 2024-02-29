@@ -78,6 +78,7 @@ class BookingController extends Controller
             'date' => $selectedDateTime,
             'total_price' => $total_price,
             'status' => $request->has('status') ? $request->status : false,
+            'booking_time'=>Carbon::now(),
         ]);
         // Check if the service exists in the user's subscription
         if (!isServiceInUserSubscription($request->service_id)) {

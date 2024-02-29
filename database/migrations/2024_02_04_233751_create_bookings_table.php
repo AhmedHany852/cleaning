@@ -23,6 +23,9 @@ return new class extends Migration
             $table->dateTime('date');
             $table->integer('total_price');
             $table->boolean('status')->default(1);
+            $table->timestamp('booking_time')->nullable();
+            $table->tinyInteger('available')->default(0);
+            $table->tinyInteger('paid')->default(0);
             $table->timestamps();
         });
     }
