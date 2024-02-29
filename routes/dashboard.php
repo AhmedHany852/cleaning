@@ -12,8 +12,8 @@ use App\Http\Controllers\Admin\PrivacyController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\QuestionController;
-use App\Http\Controllers\PaymentGatewayController;
 use App\Http\Controllers\Admin\SubscriptionController;
+use App\Http\Controllers\Admin\PaymentGatewayController;
 
 
 Route::group([
