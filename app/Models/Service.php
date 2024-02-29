@@ -9,11 +9,16 @@ class Service extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'price', 'photo','status'];
+    protected $fillable = ['name', 'description', 'price', 'photo','status','duration'];
+
 
     public function subscriptions()
     {
         return $this->belongsToMany(Subscription::class,'service_subscription');
+    }
+    public function booking()
+    {
+        return $this->hasMany(Booking::class);
     }
 }
 

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f118d4c56610fb3991e84dc0cc8f908f",
+    "content-hash": "467d91e7137564c021460fe7e29b590d",
     "packages": [
         {
             "name": "brick/math",
@@ -6426,6 +6426,51 @@
             "time": "2024-02-20T15:11:00+00:00"
         },
         {
+            "name": "maree/tamara",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mohamedmaree/tamara.git",
+                "reference": "c1f2848a6e68d9ed71de19c2488be7e3301209ab"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mohamedmaree/tamara/zipball/c1f2848a6e68d9ed71de19c2488be7e3301209ab",
+                "reference": "c1f2848a6e68d9ed71de19c2488be7e3301209ab",
+                "shasum": ""
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Maree\\Tamara\\TamaraServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Maree\\Tamara\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "mohamed maree",
+                    "email": "m7mdmaree26@gmail.com"
+                }
+            ],
+            "description": "package to integrate tamara with your php laravel project",
+            "support": {
+                "issues": "https://github.com/mohamedmaree/tamara/issues",
+                "source": "https://github.com/mohamedmaree/tamara/tree/main"
+            },
+            "time": "2023-02-27T23:03:05+00:00"
+        },
+        {
             "name": "mockery/mockery",
             "version": "1.6.7",
             "source": {
@@ -8540,8 +8585,10 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "stable",
-    "stability-flags": [],
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "maree/tamara": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

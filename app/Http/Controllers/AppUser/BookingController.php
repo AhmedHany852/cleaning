@@ -53,21 +53,25 @@ class BookingController extends Controller
             return response()->json(['error' => $validator->errors()], 422);
         }
         $service = Service::findOrFail($request->service_id);
+
+
         // Calculate the total price: meter * service price
         $total_price = $request->meter * $service->price;
         $selectedDateTime = Carbon::createFromFormat('m/d/Y H:i', $request->date);
+
         $user = Auth::guard('app_users')->user();
         if (!$user) {
             return response()->json(['error' => 'User not authenticated'], 401);
         }
 
         $existingBooking = Booking::where('service_id', $request->service_id)
-            ->where('date', $selectedDateTime->format('Y-m-d H:i:s'))
+        ->where('available',0)
             ->first();
-
+           dd($existingBooking);
         if ($existingBooking) {
             return response()->json(['error' => 'This date and time slot are already booked. Please choose another.'], 422);
         }
+
         // Create the booking
         $booking = Booking::create([
             'user_id' => $user->id,
@@ -100,7 +104,7 @@ class BookingController extends Controller
             }
         }
         // Send notification when booking is created
-        $adminUsers = User::where('role', 'Admin')->get();
+        $adminUsers = User::where('roles_name', 'Admin')->get();
         foreach ($adminUsers as $adminUser) {
         Notification::send($adminUser, new BookingNotification($booking));
         }

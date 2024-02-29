@@ -10,7 +10,8 @@ class Booking extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'service_id', 'name', 'address', 'phone', 'date', 'total_price', 'status'];
+    protected $fillable = ['user_id', 'service_id', 'name', 'address', 'phone', 'date', 'total_price', 'status','booking_time','available'];
+    Protected $appends = ['available'];
     public function user()
 {
     return $this->belongsTo(AppUsers::class);
@@ -21,13 +22,24 @@ public function service()
     return $this->belongsTo(Service::class);
 }
 
-public function getAvailabilityAttribute()
+public function getAvailableAttribute()
 {
-        $currentTime = Carbon::now();
-        // Calculate the time difference
-        $timeDifference = $currentTime->diffInHours($this->booking_time);
-        // Check availability
-        return $timeDifference >= $this->service->duration ? 1 : 0;
+    $currentTime = Carbon::now();
+    $timeDifference = $currentTime->diffInHours($this->booking_time);
+    // dd($timeDifference);
+    return $this->available = $timeDifference >= $this->service->duration ? 1 : 0;
+
+
+
+}
+public function setAvailableAttribute()
+{
+    $currentTime = Carbon::now();
+    $timeDifference = $currentTime->diffInHours($this->booking_time);
+
+    return $this->available = $timeDifference >= $this->service->duration ? 1 : 0;
+
+
 
 }
 }
