@@ -12,9 +12,7 @@ interface PaymentInterface
     );
     public function successPayment( Request $request);
     public function calbackPayment( Request $request);
-    public function createSession($data);
-    public function getSession($payment_id);
-    public function getConfig($data);
+   
     
 
 }

@@ -8,7 +8,7 @@ use App\Models\PaymentGeteway;
 use Illuminate\Support\Facades\Config;
 use App\Services\contracts\PaymentInterface;
 
-class myFatoorahPayment implements PaymentInterface
+class Tammara implements PaymentInterface
 {
     public function __construct()
     {

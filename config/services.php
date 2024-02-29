@@ -35,7 +35,8 @@ return [
         'base_url' => '',
     ],
     'tabby' => [
-        'api_token' => '',
+        'sk_test' => '',
+        'pk_test' => '',
         'base_url' => '',
     ],
 ];

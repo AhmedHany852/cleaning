@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\services;
+namespace App\Services;
 
 use Illuminate\Http\Request;
 use App\Models\PaymentGetway;
@@ -10,7 +10,7 @@ use App\Services\contracts\PaymentInterface;
 use Illuminate\Support\Facades\Http;
 
 
-class TabbyPayment implements PaymentInterface
+class TabbyPayment 
 {
     public function __construct()
     {
@@ -21,39 +21,20 @@ class TabbyPayment implements PaymentInterface
         $tabbyConf = json_decode($tabby->information, true);
         Config::set('services.tabby.pk_test ',$tabbyConf["pk_test "]);
         Config::set('services.tabby.sk_test  ',$tabbyConf["sk_test "]);
-        Config::set('services.tabby.base_url','');
-
-
+        Config::set('services.tabby.base_url','https://api.tabby.ai/api/v2/');
     }
-    public function paymentProcess(
-        $request,
-        $_amount,
-        $return,
-        $callback
+  
+        // $tabby =   Config::get('services.tabby.pk_test');
+        // $tabby =   Config::get('services.tabby.sk_test');
+    
+  
 
-    ){
-        $tabby =   Config::get('services.tabby.pk_test');
-        $tabby =   Config::get('services.tabby.sk_test');
-    }
-    public function successPayment(Request $request)
-    {
-
-
-
-    }
-    public function calbackPayment(Request $request)
-    {
-        
-
-
-
-
-    }
+   
     public function createSession($data)
     {
         $body = $this->getConfig($data);
 
-        $http = Http::withToken($this->pk_test)->baseUrl($this->base_url);
+        $http = Http::withToken(Config::get('services.tabby.pk_test'))->baseUrl(Config::get('services.tabby.base_url'));
 
         $response = $http->post('checkout',$body);
 
@@ -61,7 +42,7 @@ class TabbyPayment implements PaymentInterface
     }
     public function getSession($payment_id)
     {
-        $http = Http::withToken($this->sk_test)->baseUrl($this->base_url);
+        $http = Http::withToken(Config::get('services.tabby.sk_test'))->baseUrl(Config::get('services.tabby.base_url'));
 
         $url = 'checkout/'.$payment_id;
 
@@ -77,7 +58,7 @@ class TabbyPayment implements PaymentInterface
         $body = [
             "payment" => [
                 "amount" => $data['amount'],
-                "currency" => $data['currency'],
+                "currency" =>  $data['currency'],
                 "description" =>  $data['description'],
                 "buyer" => [
                     "phone" => $data['buyer_phone'],

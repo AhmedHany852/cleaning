@@ -60,6 +60,7 @@ class BookingController extends Controller
         // Update the booking status
         $booking->status = $request->status;
         $booking->save();
+        
 
         // Return success response with the updated booking
         return response()->json(['message' => 'Booking status updated successfully', 'booking' => $booking], 200);

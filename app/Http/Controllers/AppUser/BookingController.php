@@ -7,6 +7,7 @@ use App\Models\Booking;
 use App\Models\Service;
 use App\Models\User;
 use App\Notifications\BookingNotification;
+use App\Services\TabbyPayment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -82,8 +83,41 @@ class BookingController extends Controller
         ]);
         // Check if the service exists in the user's subscription
         if (!isServiceInUserSubscription($request->service_id)) {
-            ///payment
-            dd(88);
+            $order_data = [
+                'amount'=> 1, 
+                'currency' => 'رس',
+                'description'=> 'ok',
+                'full_name'=> $booking->name,
+                'buyer_phone'=>$booking->phone, 
+                'buyer_email' => 'ok@gmail.com',
+                'address'=> 'Saudi Riyadh', 
+                'city' => 'Riyadh',
+                'zip'=> '1234',
+                'order_id'=>  $booking->id,
+                'registered_since' => $booking->created_at,
+                'loyalty_level'=> 0,
+                'success-url'=> route('success-ur'),
+                'cancel-ur' => route('cancel-ur'),
+                'failure-ur' => route('failure-ur'),
+                'items' => [
+                    [
+                        'title' => 'حجز خدمة', // Adjust as per your requirement
+                        'quantity' => 1, // Adjust as per your requirement
+                        'unit_price' => $total_price, // Adjust as per your requirement
+                        'category' => 'الخدمة', // Adjust as per your requirement
+                        ]
+                    ],
+                ];
+    
+            $tabby = new TabbyPayment();
+    
+            $payment = $tabby->createSession($order_data);
+    
+            $id = $payment->id;
+    
+            $redirect_url = $payment->configuration->available_products->installments[0]->web_url;
+    
+            return redirect($redirect_url);
         } else {
             //   dd(99);
             $user = Auth::guard('app_users')->user();
@@ -99,11 +133,16 @@ class BookingController extends Controller
                 }
             }
         }
+     
+
+      
+        ;
         // Send notification when booking is created
-        $adminUsers = User::where('role', 'Admin')->get();
+        $adminUsers = User::where('roles_name', 'Admin')->get();
         foreach ($adminUsers as $adminUser) {
         Notification::send($adminUser, new BookingNotification($booking));
         }
+
 
         return response()->json(['message' => 'Booking created successfully', 'booking' => $booking], 201);
     }
