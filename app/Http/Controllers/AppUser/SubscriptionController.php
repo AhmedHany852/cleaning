@@ -47,7 +47,7 @@ class SubscriptionController extends Controller
         $membership->subscription_id = $request->subscription_id;
         $membership->expire_date = Carbon::now()->addDays($duration);
         $membership->save();
-        $adminUsers = User::where('role', 'admin')->get();
+        $adminUsers = User::where('roles_name', 'admin')->get();
 
     // Dispatch the notification to admin users
     foreach ($adminUsers as $adminUser) {

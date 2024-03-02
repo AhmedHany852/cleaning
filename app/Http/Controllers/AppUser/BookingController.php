@@ -26,22 +26,16 @@ class BookingController extends Controller
     public function __construct()
     {
           $this->tammara = new TammaraPayment();
-          $this->tabby = new TableOfContentsBuilder();
+          $this->tabby = new TabbyPayment();
     }
     public function userBookings()
     {
-        // Get the authenticated user using the app_users guard
-        $user = Auth::guard('app_users')->user();
 
-        // Check if a user is authenticated
+        $user = Auth::guard('app_users')->user();
         if (!$user) {
             return response()->json(['error' => 'User not authenticated'], 401);
         }
-
-        // Retrieve bookings associated with the authenticated user
         $bookings = Booking::where('user_id', $user->id)->get();
-
-        // Return the list of bookings
         return response()->json(['bookings' => $bookings], 200);
     }
 
@@ -234,7 +228,19 @@ class BookingController extends Controller
 
     public function sucess(Request $request)
     {
-        dd($request);
+
+       dd($request);
+        $order = Order::find(1);
+
+        $tabby_payemnt = $this->tabby->getSession($order->payment_id);
+
+        if (isset($tabby_payemnt->payment) && $tabby_payemnt ->payment->status == "CLOSED") {
+
+                $order->paid == true;
+                $order->save();
+        }
+
+
     }
     public function cancel(Request $request)
     {
