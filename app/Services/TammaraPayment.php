@@ -17,12 +17,12 @@ class TammaraPayment
     public function __construct()
     {
 
-        $tammara = PaymentGetway::where([
-            ['keyword', 'Tammara'],
-        ])->first();
-        $tammaraConf = json_decode($tammara->information, true);
-        Config::set('services.tammara.api_token', $tammaraConf["api_token"]);
-        Config::set('services.tammara.base_url', '');
+        // $tammara = PaymentGetway::where([
+        //     ['keyword', 'Tammara'],
+        // ])->first();
+        // $tammaraConf = json_decode($tammara->information, true);
+        // Config::set('services.tammara.api_token', $tammaraConf["token"]);
+
     }
 
     public function paymentProcess($order,$products,$consumer,$billing_address,$shipping_address)

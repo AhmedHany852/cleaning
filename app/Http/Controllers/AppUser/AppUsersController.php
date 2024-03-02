@@ -49,9 +49,7 @@ class AppUsersController extends Controller
                     'name' => 'new_user',
                     'phone' => $phone,
                     'otp' => $otp,
-                    'api_token' => Str::random(100),
                 ]);
-
             }
 
             $text = "رمز التحقق هو: " . $otp . " للاستخدام في تطبيق قطون  ";
