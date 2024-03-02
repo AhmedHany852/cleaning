@@ -10,26 +10,25 @@ use App\Services\contracts\PaymentInterface;
 use Illuminate\Support\Facades\Http;
 
 
-class TabbyPayment 
+class TabbyPayment
 {
     public function __construct()
     {
 
-        $tabby = PaymentGetway::where([
-            ['keyword', 'Tabby'],
-        ])->first();
-        $tabbyConf = json_decode($tabby->information, true);
-        Config::set('services.tabby.pk_test ',$tabbyConf["pk_test "]);
-        Config::set('services.tabby.sk_test  ',$tabbyConf["sk_test "]);
-        Config::set('services.tabby.base_url','https://api.tabby.ai/api/v2/');
+        // $tabby = PaymentGetway::where([
+        //     ['keyword', 'Tabby'],
+        // ])->first();
+        // $tabbyConf = json_decode($tabby->information, true);
+        // Config::set('services.tabby.pk_test ',$tabbyConf["pk_test "]);
+        // Config::set('services.tabby.sk_test  ',$tabbyConf["sk_test "]);
+        // Config::set('services.tabby.base_url','https://api.tabby.ai/api/v2/');
     }
-  
-        // $tabby =   Config::get('services.tabby.pk_test');
-        // $tabby =   Config::get('services.tabby.sk_test');
-    
-  
 
-   
+
+
+
+
+
     public function createSession($data)
     {
         $body = $this->getConfig($data);
@@ -77,7 +76,7 @@ class TabbyPayment
                     "discount_amount" => "0.00",
                     "updated_at" => now(),
                     "reference_id" => $data['order_id'],
-                    "items" => 
+                    "items" =>
                         $data['items']
                     ,
                 ],

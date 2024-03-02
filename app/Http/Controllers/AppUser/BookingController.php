@@ -161,7 +161,7 @@ class BookingController extends Controller
           dd( $this->tammara->paymentProcess($order ,$products, $consumer, $billing_address,$shipping_address)) ;
         }
         } else {
-             dd(99);
+
             $user = Auth::guard('app_users')->user();
             $subscriptions = $user->subscription()->where('expire_date', '>', now())->get();
 
