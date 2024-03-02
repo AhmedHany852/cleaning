@@ -73,12 +73,12 @@ class BookingController extends Controller
             return response()->json(['error' => 'User not authenticated'], 401);
         }
 
-        $existingBooking = Booking::where('service_id', $request->service_id)
-            ->where('date', $selectedDateTime->format('Y-m-d H:i:s'))->where('available',0)
-            ->first();
-        if ($existingBooking) {
-            return response()->json(['error' => 'This date and time slot are already booked. Please choose another.'], 422);
-        }
+        // $existingBooking = Booking::where('service_id', $request->service_id)
+        //     ->where('date', $selectedDateTime->format('Y-m-d H:i:s'))->where('available',0)
+        //     ->first();
+        // if ($existingBooking) {
+        //     return response()->json(['error' => 'This date and time slot are already booked. Please choose another.'], 422);
+        // }
 
         // Create the booking
         $booking = Booking::create([
@@ -90,11 +90,8 @@ class BookingController extends Controller
             'status' => $request->has('status') ? $request->status : false,
             'booking_time'=>Carbon::now(),
         ]);
-        // Check if the service exists in the user's subscription
         if (!isServiceInUserSubscription($request->service_id)) {
             if($request->payment=='Tabby'){
-
-
             $order_data = [
                 'amount'=> 1,
                 'currency' => 'رس',
@@ -113,10 +110,10 @@ class BookingController extends Controller
                 'failure-ur' => route('failure-ur'),
                 'items' => [
                     [
-                        'title' => 'حجز خدمة', // Adjust as per your requirement
-                        'quantity' => 1, // Adjust as per your requirement
-                        'unit_price' => $total_price, // Adjust as per your requirement
-                        'category' => 'الخدمة', // Adjust as per your requirement
+                        'title' => 'حجز خدمة',
+                        'quantity' => 1,
+                        'unit_price' => $total_price,
+                        'category' => 'الخدمة',
                         ]
                     ],
                 ];
@@ -146,7 +143,7 @@ class BookingController extends Controller
 
             $shipping_address = $billing_address;
                 $order = [
-                'order_num' => $booking->order_number,
+                'order_num' =>869698,
                 'total' => $booking->total_price,
                 'notes' => 'notes',
                 'discount_name' => 'discount coupon',
@@ -154,7 +151,7 @@ class BookingController extends Controller
                 'vat_amount' => 0,
                 'shipping_amount' => 0,
             ];
-            $products = [
+            $products[] = [
                 'id' => $booking->service_id,
                 'type'=> 'حجز خدمة',
                 'name' =>  $booking->service->name,
@@ -167,10 +164,10 @@ class BookingController extends Controller
                 'total' => $booking->service->price,
             ];
 
-          return  $this->tammara->paymentProcess($order ,$products, $consumer,  $billing_address,$shipping_address) ;
+          dd( $this->tammara->paymentProcess($order ,$products, $consumer, $billing_address,$shipping_address)) ;
         }
         } else {
-            //   dd(99);
+             dd(99);
             $user = Auth::guard('app_users')->user();
             $subscriptions = $user->subscription()->where('expire_date', '>', now())->get();
 

@@ -27,9 +27,10 @@ class TammaraPayment
 
     public function paymentProcess($order,$products,$consumer,$billing_address,$shipping_address)
     {
+
         $urls = ['success' => route('tammara-result'), 'failure' =>  route('tammara-result'), 'cancel' => route('tammara-result'), 'notification' => 'tammara-result'];
         $respone = (new Tamara())->createCheckoutSession($order, $products, $consumer, $billing_address, $shipping_address, $urls);
-
+     dd($respone);
         return $respone['checkout_url'];
     }
     public function calbackPayment(Request $request)
