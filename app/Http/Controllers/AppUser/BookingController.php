@@ -2,23 +2,32 @@
 
 namespace App\Http\Controllers\AppUser;
 
-use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Booking;
 use App\Models\Service;
-use App\Models\User;
-use App\Notifications\BookingNotification;
-use App\Services\TabbyPayment;
 use Illuminate\Http\Request;
+use App\Services\TabbyPayment;
+use App\Services\TammaraPayment;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Carbon\Carbon;
+use App\Notifications\BookingNotification;
 use Illuminate\Support\Facades\Notification;
+use League\CommonMark\Extension\TableOfContents\TableOfContentsBuilder;
 
 class BookingController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    public $tammara;
+    public $tabby;
+    public function __construct()
+    {
+          $this->tammara = new TammaraPayment();
+          $this->tabby = new TableOfContentsBuilder();
+    }
     public function userBookings()
     {
         // Get the authenticated user using the app_users guard
@@ -43,12 +52,11 @@ class BookingController extends Controller
         // Validate the incoming request data
         $validator = Validator::make($request->all(), [
             'service_id' => 'required|exists:services,id',
-            'name' => 'required|string',
             'address' => 'required|string',
-            'phone' => 'required|string',
             'date' => 'required|date_format:m/d/Y H:i',
             'meter' => 'required|numeric',
             'status' => 'boolean',
+            'payment'=>'required',
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 422);
@@ -76,9 +84,7 @@ class BookingController extends Controller
         $booking = Booking::create([
             'user_id' => $user->id,
             'service_id' => $request->service_id,
-            'name' => $request->name,
             'address' => $request->address,
-            'phone' => $request->phone,
             'date' => $selectedDateTime,
             'total_price' => $total_price,
             'status' => $request->has('status') ? $request->status : false,
@@ -86,14 +92,17 @@ class BookingController extends Controller
         ]);
         // Check if the service exists in the user's subscription
         if (!isServiceInUserSubscription($request->service_id)) {
+            if($request->payment=='Tabby'){
+
+
             $order_data = [
-                'amount'=> 1, 
+                'amount'=> 1,
                 'currency' => 'رس',
                 'description'=> 'ok',
-                'full_name'=> $booking->name,
-                'buyer_phone'=>$booking->phone, 
+                'full_name'=> $booking->user->name,
+                'buyer_phone'=>$booking->user->phone,
                 'buyer_email' => 'ok@gmail.com',
-                'address'=> 'Saudi Riyadh', 
+                'address'=> 'Saudi Riyadh',
                 'city' => 'Riyadh',
                 'zip'=> '1234',
                 'order_id'=>  $booking->id,
@@ -111,16 +120,55 @@ class BookingController extends Controller
                         ]
                     ],
                 ];
-    
-            $tabby = new TabbyPayment();
-    
-            $payment = $tabby->createSession($order_data);
-    
+
+            $payment = $this->tabby->createSession($order_data);
+
             $id = $payment->id;
-    
+
             $redirect_url = $payment->configuration->available_products->installments[0]->web_url;
-    
+
             return redirect($redirect_url);
+        }elseif($request->payment=='Tammara'){
+            $consumer = [
+                'first_name' =>  $booking->user->name,
+                'last_name' => $booking->user->name,
+                'phone' => $booking->user->phone,
+                'email' => $booking->user->email ?? 'test@test.com' ,
+            ];
+
+            $billing_address = [
+                'first_name' => $booking->user->name,
+                'last_name' =>  $booking->user->name,
+                'line1' =>  $request->address??'Riyadh',
+                'city' =>  $request->address??'Riyadh',
+                'phone' => $booking->user->phone,
+            ];
+
+            $shipping_address = $billing_address;
+                $order = [
+                'order_num' => $booking->order_number,
+                'total' => $booking->total_price,
+                'notes' => 'notes',
+                'discount_name' => 'discount coupon',
+                'discount_amount' => 0,
+                'vat_amount' => 0,
+                'shipping_amount' => 0,
+            ];
+            $products = [
+                'id' => $booking->service_id,
+                'type'=> 'حجز خدمة',
+                'name' =>  $booking->service->name,
+                'sku' => 'SA-12436',
+                'image_url' => $booking->service->photo,
+                'quantity' => 1,
+                'unit_price' => $booking->service->price,
+                'discount_amount' => 0,
+                'tax_amount' => 0,
+                'total' => $booking->service->price,
+            ];
+
+          return  $this->tammara->paymentProcess($order ,$products, $consumer,  $billing_address,$shipping_address) ;
+        }
         } else {
             //   dd(99);
             $user = Auth::guard('app_users')->user();
@@ -136,9 +184,9 @@ class BookingController extends Controller
                 }
             }
         }
-     
 
-      
+
+
         ;
         // Send notification when booking is created
         $adminUsers = User::where('roles_name', 'Admin')->get();
@@ -185,5 +233,22 @@ class BookingController extends Controller
 
         // Return success response
         return response()->json(['message' => 'Booking canceled successfully'], 200);
+    }
+
+    public function sucess(Request $request)
+    {
+        dd($request);
+    }
+    public function cancel(Request $request)
+    {
+        dd($request);
+    }
+    public function failure(Request $request)
+    {
+        dd($request);
+    }
+    public function tamaraResult(Request $request)
+    {
+       return  $this->tammara->calbackPayment($request);
     }
 }

@@ -84,5 +84,13 @@ class SubscriptionController extends Controller
         // Return a success message
         return response()->json(['message' => 'Visit requested successfully.'], 200);
     }
+  public function userSuscriptions(){
+    $user = Auth::guard('app_users')->user();
+    if (!$user) {
+        return response()->json(['error' => 'User not authenticated'], 401);
+    }
+    $suscriptions = $user->subscription;
 
+    return response()->json(['data' => $suscriptions], 200);
+  }
 }
