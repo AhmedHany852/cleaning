@@ -55,8 +55,10 @@ Route::group([
     Route::post('/update-profile', [UserProfileController::class, 'updateProfile']);
     Route::get('/deactive-account', [UserProfileController::class, 'deactive_account']);
 });
-Route::get('/tabby-sucess', [BookingController::class,'sucess'])->route('success-ur');
-Route::get('/tabby-cancel', [BookingController::class,'cancel'])->route('cancel-ur');
-Route::get('/tabby-failure', [BookingController::class,'failure'])->route('failure-ur');
-Route::get('/result', [BookingController::class,'tamaraResult'])->route('tammara-result');
+
+Route::get('/tabby-sucess', [BookingController::class,'sucess'])->name('success-ur');
+Route::get('/tabby-cancel', [BookingController::class,'cancel'])->name('cancel-ur');
+Route::get('/tabby-failure', [BookingController::class,'failure'])->name('failure-ur');
+Route::get('/result', [BookingController::class,'tamaraResult'])->name('tammara-result');
+
 require __DIR__ . '/dashboard.php';
