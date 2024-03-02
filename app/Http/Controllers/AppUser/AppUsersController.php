@@ -43,6 +43,7 @@ class AppUsersController extends Controller
                     return response()->json(['success' => "false", 'is_new' => false], 403);
                 }
             } else {
+
                 //create user
                 $user = AppUsers::create([
                     'name' => 'new_user',
@@ -50,6 +51,7 @@ class AppUsersController extends Controller
                     'otp' => $otp,
                     'api_token' => Str::random(100),
                 ]);
+
             }
 
             $text = "رمز التحقق هو: " . $otp . " للاستخدام في تطبيق قطون  ";
@@ -57,6 +59,7 @@ class AppUsersController extends Controller
 
             return response()->json(['success' => "true", 'is_new' => $is_new_user], 200);
         } catch (\Exception $e) {
+            dd($e->getMessage());
             return response()->json(['success' => "false", 'is_new' => false], 403);
         }
 

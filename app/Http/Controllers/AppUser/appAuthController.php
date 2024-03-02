@@ -65,7 +65,7 @@ class appAuthController extends Controller
             'expires_in' => JWTAuth::factory()->getTTL() * 100,
         ]);
     }
-  
+
 
 
 
@@ -74,7 +74,7 @@ class appAuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
-            'email' => 'required|string|email|unique:users',
+            'email' => 'required|string|email|unique:app_users',
             'password' => 'required|string|min:6',
             'phone' => 'required|string|min:6',
         ]);
